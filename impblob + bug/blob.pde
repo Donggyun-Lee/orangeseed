@@ -3,7 +3,6 @@ class Blob {
   float miny;
   float maxx;
   float maxy;
-  //int time = 0;
   int sec;
   int id = 0;
 
@@ -29,20 +28,12 @@ class Blob {
 
   void show() {
     noStroke();
-    //fill(255, 100);
-    //rectMode(CORNERS);
-    //rect(minx, miny, maxx, maxy);
-    fill(255);
-    ellipse((maxx - minx) * 0.5 + minx, (maxy - miny)* 0.5 + miny, 100, 100);
-    //for (PVector v : points) {
-    //  stroke(255, 0, 0);
-    //  point(v.x, v.y);
-    //}
+    fill(0, 20);
+    ellipse((maxx - minx) * 0.5 + minx, (maxy - miny)* 0.5 + miny, 50, 50);
     textAlign(CENTER,CENTER);
     textSize(20);
-    fill(0);
+    fill(255);
     text("id:" + id, minx + (maxx - minx) * 0.5, (maxy - miny)* 0.5 + miny);
-    //text("time:" + time, minx + (maxx - minx) * 0.5, (maxy - miny)* 0.5 + miny + 20);
   }
 
   void add(float x, float y) {
@@ -60,14 +51,6 @@ class Blob {
     maxy = other.maxy;
   }
 
-  //void update() {
-  //  sec++;
-  //  if (sec > 60) {
-  //    time += 1;
-  //    sec = 0;
-  //  }
-  //}
-
   float size() {
     return (maxx - minx) * (maxy - miny);
   }
@@ -83,13 +66,6 @@ class Blob {
     float cy = max(min(y, maxy), miny);
 
     float d = distSq(cx, cy, x, y);
-    //float d = 100000;
-    //for (PVector v : points) {
-    //  float tempD = distSq(x, y, v.x, v.y);
-    //  if (tempD < d) {
-    //    d = tempD;
-    //}
-    //}
 
     if (d < distThreshold * distThreshold) {
       return true;

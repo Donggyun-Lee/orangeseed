@@ -23,11 +23,11 @@ ArrayList<PVector> pos = new ArrayList<PVector>();
 void setup() {
   size(512, 424, P3D);
   //fullScreen(P3D);
-
+  frameRate(15);
   kinect = new KinectPV2(this);
   kinect.enableDepthImg(true);
   kinect.init();
-  img = kinect.getDepth256Image();
+  img = kinect.getDepthImage();
 
   //get ladybug frames from data folder
   for (int i = 0; i < ladybug.length; i++) {
@@ -36,36 +36,8 @@ void setup() {
   bug = new Bug();
 }
 
-//void keyPressed() {
-//  if (key == 'a') {
-//    distThreshold++;
-//    print(distThreshold);
-//  } else if (key == 'z') {
-//    distThreshold--;
-//    print(distThreshold);
-//  } else if (key == 's') {
-//    maxThresh += 100;
-//    print(maxThresh);
-//  } else if (key == 'x') {
-//    maxThresh -= 10;
-//    print(maxThresh);
-//  } else if (key == 'd') {
-//    minThresh += 10;
-//    print(minThresh);
-//  } else if (key == 'c') {
-//    minThresh -= 10;
-//    print(minThresh);
-//  } else if (key == 'f') {
-//    s += 100;
-//    print(s);
-//  } else if (key == 'v') {
-//    s -= 100;
-//    print(s);
-//  }
-//}
-
 void draw() {
-  background(0);
+  background(255);
   img.loadPixels();
   int[] depth =  kinect.getRawDepthData();
 
@@ -77,9 +49,8 @@ void draw() {
       int offset  = x + y * img.width;
       int d = depth[offset];
 
-      // put && xy to make lline thine && y > 100 && y < 324
       if (d > minThresh && d < maxThresh ) {
-        img.pixels[offset] = color(255, 0, 150);
+        img.pixels[offset] = color(0);
 
         boolean found = false;
         for (Blob b : currentBlobs) {
@@ -97,13 +68,13 @@ void draw() {
           currentBlobs.add(b);
         }
       } else {
-        img.pixels[offset] = color(0);
+        img.pixels[offset] = color(255);
       }
     }
   }
 
-  img.updatePixels(); 
-  image(img, 0, 0);
+  img.updatePixels();
+  image(img, 0, 0, 512, 424);
 
 
   for (int i = currentBlobs.size() -1; i >= 0; i--) {
@@ -174,17 +145,22 @@ void draw() {
       }
     }
   }
+  if (blobs.size() >= 1) {
+    stroke(0, 255, 0);
+    strokeWeight(20);
+    line(450, height/2, blobs.get(0).getCenter().x, blobs.get(0).getCenter().y);
+  }
 
   for (int i = 0; i < blobs.size() -1; i++) {
     PVector p1 = blobs.get(i).getCenter();
     PVector p2 = blobs.get(i + 1).getCenter();
     stroke(0, 255, 0);
-    strokeWeight(10);
+    strokeWeight(20);
     line(p1.x, p1.y, p2.x, p2.y);
   }
 
+  //showing blobs location
   for (Blob b : blobs) {
-    //b.update();
     b.show();
   }
 
@@ -197,11 +173,3 @@ void draw() {
     index = 0;
   }
 }
-//for (int i = 0; i < pos.size()-1; i++) {
-//  PVector p1 = pos.get(i);
-//  PVector p2 = pos.get(i + 1);
-//  if (i > 0) {
-//    stroke(255);
-//    line(p1.x, p1.y, p2.x, p2.y);
-//  }
-//}
