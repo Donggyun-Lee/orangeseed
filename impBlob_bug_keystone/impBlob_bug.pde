@@ -1,7 +1,12 @@
+import deadpixel.keystone.*;
 import KinectPV2.*;
 
 KinectPV2 kinect;
 Bug bug;
+Keystone ks;
+CornerPinSurface surface;
+
+PGraphics offscreen;
 
 //bug have 9 frames and frame number is  counted by index value
 PImage[] ladybug = new PImage[9];
@@ -21,8 +26,11 @@ ArrayList<Blob> blobs =new ArrayList<Blob>();
 //line node position arraylist
 ArrayList<PVector> pos = new ArrayList<PVector>();
 void setup() {
-  size(512, 424, P3D);
-  //fullScreen(P3D);
+  //size(512, 424, P3D);
+  fullScreen(P3D);
+  ks = new Keystone(this);
+  surface = ks.createCornerPinSurface(400, 300, 20);
+  offscreen = createGraphics(400, 300, P3D);
 
   kinect = new KinectPV2(this);
   kinect.enableDepthImg(true);
@@ -65,7 +73,13 @@ void setup() {
 //}
 
 void draw() {
-  background(0);
+  PVector surfaceMouse = surface.getTransformedMouse();
+  offscreen.beginDraw();
+  offscreen.background(255);
+  offscreen.fill(0, 255, 0);
+  offscreen.ellipse(surfaceMouse.x, surfaceMouse.y, 75, 75);
+
+
   img.loadPixels();
   int[] depth =  kinect.getRawDepthData();
 
@@ -102,7 +116,7 @@ void draw() {
     }
   }
 
-  img.updatePixels(); 
+  img.updatePixels();
   image(img, 0, 0);
 
 
@@ -111,7 +125,6 @@ void draw() {
       currentBlobs.remove(i);
     }
   }
-
 
   if (blobs.isEmpty() && currentBlobs.size() > 0) {
     for (Blob b : currentBlobs) {
@@ -196,7 +209,19 @@ void draw() {
   } else {
     index = 0;
   }
+
+
+  offscreen.endDraw();
+
+  // most likely, you'll want a black background to minimize
+  // bleeding around your projection area
+  background(0);
+
+  // render the scene, transformed using the corner pin surface
+  surface.render(offscreen);
 }
+
+
 //for (int i = 0; i < pos.size()-1; i++) {
 //  PVector p1 = pos.get(i);
 //  PVector p2 = pos.get(i + 1);
