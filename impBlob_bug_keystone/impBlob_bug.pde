@@ -221,6 +221,26 @@ void draw() {
   surface.render(offscreen);
 }
 
+void keyPressed() {
+  switch(key) {
+  case 'c':
+    // enter/leave calibration mode, where surfaces can be warped 
+    // and moved
+    ks.toggleCalibration();
+    break;
+
+  case 'l':
+    // loads the saved layout
+    ks.load();
+    break;
+
+  case 's':
+    // saves the layout
+    ks.save();
+    break;
+  }
+}
+
 
 //for (int i = 0; i < pos.size()-1; i++) {
 //  PVector p1 = pos.get(i);
